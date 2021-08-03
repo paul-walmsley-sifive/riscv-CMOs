@@ -137,16 +137,27 @@ behave as stores in the PPO rules.
 Finally, as cache block prefetch instructions do not modify architectural memory
 state, the resulting operations are _not_ ordered by the PPO rules.
 
-==== Load Values (FIXME)
+==== Load Values
 
-In addition, an invalidate operation changes the set of values that may be 
-returned by a load. In particular, a third condition is added to the Load Value 
-Axiom:
+An invalidate operation may change the set of values that may be returned by a
+load. In particular, an additional condition is added to the Load Value Axiom:
 
-[start=3]
-. If an invalidate precedes _i_ in program order and operates on a byte, and no 
-  store to that byte appears in program order or in the global memory order 
-  between the invalidate and _i_, the load value is _implementation-defined_
+* If an invalidate _i_ precedes a load _r_ and operates on a byte _x_ returned
+  by _r_, and no store to _x_ appears between _i_ and _r_ in program order or in
+  the global memory order, _r_ returns either the value of any previous store in
+  the global memory order or the value in memory
+
+****
+
+_The above clause attempts to codify the range of values that may be returned by
+a subsequent load after an invalidate operation. Strictly speaking, in the
+Zicbom extension, the load returns the value in memory once the invalidate has
+completed; however, the value in memory may be written by any store from a
+coherent observer (depending on which writes from the coherent caches have
+updated memory) or by any store from a non-coherent observer (depending on
+whether writes from a non-coherent observer have updated memory)._
+
+****
 
 === Instruction Execution and Traps
 
@@ -180,30 +191,31 @@ the type of instruction, the _effective privilege mode_ (as determined by the
 permissions granted by the page table entry (PTE). If two-stage address
 translation is enabled, CMO instructions may also take a guest-page fault.
 
-Cache block management instructions require a valid translation (`V=1`) and
-either read (`R=1`) or execute (`X=1`) permission and, if applicable, user
-access (`U=1`) in the effective privilege mode. If the required conditions are
-_not_ met, the instruction takes a store/AMO page fault exception.
+A cache block management instruction requires read (`R=1`), write (`W=1`), or
+execute (`X=1`) permission (given a legal PTE encoding for the `XWR` bits, as
+specified by the privileged architecture) and, if applicable, user access
+(`U=1`) in the effective privilege mode; otherwise, the instruction takes a
+store page fault exception.
 
-Cache block zero instructions require a valid translation (`V=1`) and write
-(`W=1`) permission and, if applicable, user access (`U=1`) in the effective
-privilege mode. If the required conditions are _not_ met, the instruction takes
-a store/AMO page fault exception.
+A cache block zero instruction requires write (`W=1`) permission (given a legal
+PTE encoding for the `XWR` bits, as specified by the privileged architecture)
+and, if applicable, user access (`U=1`) in the effective privilege mode;
+otherwise, the instruction takes a store page fault exception.
 
 If G-stage address translation is enabled, the above instructions take a 
-store/AMO guest-page fault if the G-stage PTE does _not_ allow the access.
+store guest-page fault if the G-stage PTE does _not_ permit the access.
 
-Cache block prefetch instructions require a valid translation (`V=1`) and either
-read (`R=1`) or execute (`X=1`) permission and, if applicable, user access
-(`U=1`) in the effective privilege mode. In addition, it is
-_implementation-defined_ whether any of the following are required to perform a
-memory access:
+A cache block prefetch instruction requires read (`R=1`), write (`W=1`), or
+execute (`X=1`) permission (given a legal PTE encoding for the `XWR` bits, as
+specified by the privileged architecture) and, if applicable, user access
+(`U=1`) in the effective privilege mode. In addition, an implementation may
+require any of the following to perform a memory access:
 
-* `PREFETCH.R` requires read (`R=1`) permission
-* `PREFETCH.W` requires write (`W=1`) permission
-* `PREFETCH.I` requires execute (`X=1`) permission
+* `PREFETCH.R` may require read (`R=1`) permission
+* `PREFETCH.W` may require write (`W=1`) permission
+* `PREFETCH.I` may require execute (`X=1`) permission
 
-If the required conditions are _not_ met, however, the instruction does _not_
+If the required permission is _not_ granted, however, the instruction does _not_
 take a page fault or guest-page fault exception and retires without performing a
 memory access.
 
@@ -252,25 +264,27 @@ for a given physical address:
 * _joint execute permission_ is granted when both the PMP and PMAs allow execute
   access to the physical address
 
-Cache block management instructions require either joint read permission or
-joint execute permission for each physical address in a cache block. If the
-required condition is _not_ met, the instruction takes a store/AMO access fault
-exception.
+A cache block management instruction requires joint read, joint write, or joint
+execute permission (given legal PMA and PMP encodings for the `XWR` bits, as
+specified by the privileged architecture) for each physical address in a cache
+block; otherwise, the instruction takes a store access fault exception.
 
-Cache block zero instructions require joint write permission for each physical
-address in a cache block. If the required condition is _not_ met, the
-instruction takes a store/AMO access fault exception.
+A cache block zero instruction requires joint write permission (given legal PMA
+and PMP encodings for the `XWR` bits, as specified by the privileged
+architecture) for each physical address in a cache block; otherwise, the
+instruction takes a store access fault exception.
 
-Cache block prefetch instructions require either joint read permission or joint
-execute permission for each physical address in a cache block. In addition, it
-is _implementation-defined_ whether any of the following are required to perform
-a memory access:
+A cache block prefetch instruction requires joint read, joint write, or joint
+execute permission (given legal PMA and PMP encodings for the `XWR` bits, as
+specified by the privileged architecture) for each physical address in a cache
+block. In addition, an implementation may require any of the following to
+perform a memory access:
 
-* `PREFETCH.R` requires joint read permission
-* `PREFETCH.W` requires joint write permission
-* `PREFETCH.I` requires joint execute permission
+* `PREFETCH.R` may require joint read permission
+* `PREFETCH.W` may require joint write permission
+* `PREFETCH.I` may require joint execute permission
 
-If the required conditions are _not_ met, however, the instruction does _not_
+If the required permission is _not_ granted, however, the instruction does _not_
 take an access fault exception and retires without performing a memory access.
 
 ==== Address Misaligned Exception
@@ -284,12 +298,14 @@ actions) subject to the general trigger module behaviors specified in the debug
 architecture. When `type=2` (i.e. `mcontrol`), the behavior of a trigger for
 load and store address matches is UNSPECIFIED for CMO instructions. When
 `type=6` (i.e. `mcontrol6`), the behavior of a trigger for load and store
-address matches is based on the following classification of a CMO instruction:
+address matches is based on the type of CMO instruction:
 
-* A cache block management instruction is both a load and a store
-* A cache block zero instruction is a store 
+* A cache block management instruction is considered a store, and it is
+  _implementation-defined_ whether the instruction is also considered a load
+* A cache block zero instruction is considered a store and is _not_ considered a
+  load
 * It is _implementation-defined_ whether a cache block prefetch instruction is
-  both a load and a store or neither a load nor a store
+  considered a load, a store, both, or neither
 
 Load and store data matches for all CMO instructions are UNSPECIFIED.
 
@@ -307,8 +323,9 @@ should program the NAPOT range to equal the cache block size._
 
 === Effects on Constrained LR/SC Loops
 
-Executing a `CBO.INVAL`, `CBO.FLUSH`, `CBO.ZERO`, or `PREFETCH.W` instruction
-may cause a reservation on another hart to be lost. As a result, executing one
-of these instructions constitutes an additional event (like executing an
-unconditional store or AMO instruction) that satisfies the system forward
-progress requirements of constrained LR/SC loops.
+Executing any cache block management instruction (`CBO.INVAL`, `CBO.CLEAN`, or
+`CBO.FLUSH`), a cache block zero instruction, (`CBO.ZERO`), or a `PREFETCH.W`
+instruction may cause a reservation on another hart to be lost. As a result,
+executing one of these instructions constitutes an additional event (similar to
+executing an unconditional store or AMO instruction) that satisfies the system
+forward progress requirements of constrained LR/SC loops.

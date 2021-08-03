@@ -1,22 +1,24 @@
 [#csr_state,reftext="Control and Status Register State"]
 == Control and Status Register State
 
-Three CSRs control execution of CMO instructions:
+****
+
+_The CMO extensions rely on state in {csrname} CSRs that will be defined in a
+future extension. If this CSR extension is not ratified, the CMO extension will
+define its own CSRs._
+
+****
+
+Three CSRs control the execution of CMO instructions:
 
 * `m{csrname}`
 * `s{csrname}`
 * `h{csrname}`
 
-****
-
-_The `s{csrname}` register is used by all supervisor modes, including VS-mode. A
+The `s{csrname}` register is used by all supervisor modes, including VS-mode. A
 hypervisor is responsible for saving and restoring `s{csrname}` on guest context
-switches._
-
-****
-
-The `h{csrname}` register is only present if the H-extension is implemented and
-enabled.
+switches. The `h{csrname}` register is only present if the H-extension is
+implemented and enabled.
 
 Each `x{csrname}` register (where `x` is `m`, `s`, or `h`) has the following
 generic format:
@@ -26,7 +28,7 @@ generic format:
 |===
 | Bits    | Name     | Description
 
-| [??:??] | `CBIE`   | Cache Block Invalidate instruction Enable
+| [5:4]   | `CBIE`   | Cache Block Invalidate instruction Enable
 
 Enables the execution of the cache block invalidate instruction, `CBO.INVAL`, in
 a lower privilege mode:
@@ -37,7 +39,7 @@ a lower privilege mode:
   this value as `00`; however, software must not rely on this behavior)
 * `11`: The instruction is executed and performs an invalidate operation
 
-| [??]    | `CBCFE`  | Cache Block Clean and Flush instruction Enable
+| [6]     | `CBCFE`  | Cache Block Clean and Flush instruction Enable
 
 Enables the execution of the cache block clean instruction, `CBO.CLEAN`, and the
 cache block flush instruction, `CBO.FLUSH`, in a lower privilege mode:
@@ -45,7 +47,7 @@ cache block flush instruction, `CBO.FLUSH`, in a lower privilege mode:
 * `0`: The instruction takes an illegal instruction exception
 * `1`: The instruction is executed
 
-| [??]    | `CBZE`   | Cache Block Zero instruction Enable
+| [7]     | `CBZE`   | Cache Block Zero instruction Enable
 
 Enables the execution of the cache block zero instruction, `CBO.ZERO`, in a
 lower privilege mode:
@@ -147,5 +149,12 @@ else
 
 --
 
-Each `x{csrname}` register is WARL, where a CSR read returns the behaviors
-supported by the implementation.
+Each `x{csrname}` register is WLRL, where the legal values are defined by the
+execution environment discovery mechanism.
+
+****
+
+_This specification suggests, but does not require, that implementations capture
+only legal values in the CSRs._
+
+****

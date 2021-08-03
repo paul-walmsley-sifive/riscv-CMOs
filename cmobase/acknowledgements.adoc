@@ -2,6 +2,7 @@
 == Acknowledgments
 
 Contributors to this specification (in alphabetical order) include: +
+John Ingalls,
 David Kruckemyer, and
 Philipp Tomsich.
 
