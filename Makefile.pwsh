@@ -11,7 +11,7 @@
 PWSHCMD=powershell -noprofile -command
 SPEC=cmobase
 # version is TG version number; should be updated in both Makefiles
-VERSION=0.4
+VERSION=0.5
 DATE=$(shell date -UFormat \"%Y.%m.%d\")
 COMMITDATE=$(shell git log -1 --format=%cs)
 GITVERSION=$(shell git describe --tag --always --dirty)

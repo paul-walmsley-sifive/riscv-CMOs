@@ -16,7 +16,7 @@ The following instructions comprise the Zicboz extension:
 
 |&#10003;
 |&#10003;
-|cbo.zero _rs_
+|cbo.zero _base_
 |<<#insns-cbo_zero>>
 
 |===

@@ -1,0 +1,35 @@
+[#insns-prefetch_r,reftext="Cache Block Prefetch for Data Read"]
+=== prefetch.r
+
+Synopsis::
+Provide a hint to hardware that the cache block containing the effective address
+is likely to be accessed by a data read in the near future
+
+Mnemonic::
+prefetch.r _base_, _offset_
+
+Encoding::
+[wavedrom, , svg]
+....
+{reg:[
+	{ bits: 7,  name: 0x13,        attr: ['OP-IMM'] },
+	{ bits: 5,  name: 0x0,         attr: ['offset[4:0]'] },
+	{ bits: 3,  name: 0x6,         attr: ['ORI'] },
+	{ bits: 5,  name: 'rs1',       attr: ['base'] },
+	{ bits: 5,  name: 0x1,         attr: ['PREFETCH.R'] },
+	{ bits: 7, name: 'imm[11:5]',  attr: ['offset[11:5]'] },
+]}
+....
+
+Description::
+A *prefetch.r* instruction indicates to hardware that the cache block containing
+the effective address is likely to be accessed by a data read (i.e. load) in the
+near future. An implementation may opt to cache a copy of the cache block in a
+cache accessed by a data read in order to improve memory access latency, but
+this behavior is _not_ required.
+
+Operation::
+[source,sail]
+--
+TODO
+--

@@ -6,7 +6,7 @@ Perform an invalidate operation on the cache block containing the effective
 address
 
 Mnemonic::
-cbo.inval _rs_
+cbo.inval _base_
 
 Encoding::
 [wavedrom, , svg]
@@ -15,7 +15,7 @@ Encoding::
 	{ bits: 7,  name: 0xF,   attr: ['MISC-MEM'] },
 	{ bits: 5,  name: 0x0 },
 	{ bits: 3,  name: 0x2,   attr: ['CBO'] },
-	{ bits: 5,  name: 'rs' },
+	{ bits: 5,  name: 'rs1', attr: ['base'] },
 	{ bits: 12, name: 0x000, attr: ['CBO.INVAL'] },
 ]}
 ....
