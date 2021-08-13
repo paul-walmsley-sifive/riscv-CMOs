@@ -388,13 +388,13 @@ Executing any cache block management instruction (`CBO.INVAL`, `CBO.CLEAN`, or
 reservation on another hart to be lost. As a result, executing one of these
 instructions constitutes an additional event (similar to executing an
 unconditional store or an AMO instruction) that satisfies the eventuality
-guarantee of constrained LR/SC loops defined the A extension.
+guarantee of constrained LR/SC loops defined in the A extension.
 
 ****
 
 _Executing any cache block prefetch instruction (`PREFETCH.I`, `PREFETCH.R`, or
 `PREFETCH.W`) does not impact the eventuality guarantee of constrained LR/SC
-loops defined by the A extension; however, these instructions may cause the
+loops defined in the A extension; however, these instructions may cause the
 periodic cancellation of a reservation on another hart._
 
 ****
