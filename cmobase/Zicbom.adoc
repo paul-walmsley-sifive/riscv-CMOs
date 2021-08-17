@@ -6,22 +6,24 @@ observers to communicate with a set of non-coherent observers by performing one
 of the following operations:
 
 * An _invalidate operation_ makes store operations from a set of non-coherent
-  observers appear to the set of coherent observers by removing all copies of a
-  cache block from the coherent caches
+  observers appear to the set of coherent observers at a point common to both
+  sets by removing all copies of a cache block from the coherent caches up to
+  that point
+  
 * A _clean operation_ makes store operations from the set of coherent observers
-  appear to a set of non-coherent observers by performing a write operation of
-  a copy of a cache block to the underlying memory locations (or to a cache
-  shared by both sets), provided a coherent observer performed a store operation
-  to the cache block since the previous such write operation
+  appear to a set of non-coherent observers at a point common to both sets by
+  performing a write operation of a copy of a cache block to that point,
+  provided a coherent observer performed a store operation to the cache block
+  since the previous such write operation
+  
 * A _flush operation_ atomically performs a clean operation followed by an
   invalidate operation
 
-In the Zicbom extension, the instructions operate to a point where store
-operations are visible to _all_ observers in the system. In other words, an
-invalidate operation ensures that store operations from all non-coherent
-observers appear to observers in the set of coherent observers, and a clean
-operation ensures that store operations from coherent observers appear to all
-non-coherent observers.
+In the Zicbom extension, the instructions operate to a point common to _all_
+observers in the system. In other words, an invalidate operation ensures that
+store operations from all non-coherent observers appear to observers in the set
+of coherent observers, and a clean operation ensures that store operations from
+coherent observers appear to all non-coherent observers.
 
 ****
 
@@ -45,17 +47,17 @@ The following instructions comprise the Zicbom extension:
 
 |&#10003;
 |&#10003;
-|cbo.clean _rs_
+|cbo.clean _base_
 |<<#insns-cbo_clean>>
 
 |&#10003;
 |&#10003;
-|cbo.flush _rs_
+|cbo.flush _base_
 |<<#insns-cbo_flush>>
 
 |&#10003;
 |&#10003;
-|cbo.inval _rs_
+|cbo.inval _base_
 |<<#insns-cbo_inval>>
 
 |===

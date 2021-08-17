@@ -5,7 +5,7 @@ Synopsis::
 Write zeros to the cache block containing the effective address
 
 Mnemonic::
-cbo.zero _rs_
+cbo.zero _base_
 
 Encoding::
 [wavedrom, , svg]
@@ -14,16 +14,16 @@ Encoding::
 	{ bits: 7,  name: 0xF,   attr: ['MISC-MEM'] },
 	{ bits: 5,  name: 0x0 },
 	{ bits: 3,  name: 0x2,   attr: ['CBO'] },
-	{ bits: 5,  name: 'rs' },
+	{ bits: 5,  name: 'rs1', attr: ['base'] },
 	{ bits: 12, name: 0x004, attr: ['CBO.ZERO'] },
 ]}
 ....
 
 Description::
-The *cbo.zero* instruction performs a series of byte-sized store operations
-where the data equal zero. An implementation may or may not update the entire
-cache block atomically and may or may not allocate a copy of the cache block in
-one of the coherent caches accessed by the observer executing the instruction.
+A *cbo.zero* instruction performs a series of byte-sized store operations where
+the data equal zero. An implementation may or may not update the entire cache
+block atomically and may or may not allocate a copy of the cache block in one of
+the coherent caches accessed by the observer executing the instruction.
 
 Operation::
 [source,sail]

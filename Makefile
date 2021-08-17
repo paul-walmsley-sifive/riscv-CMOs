@@ -8,7 +8,7 @@
 
 SPEC=cmobase
 # version is TG version number; should be updated in both Makefiles
-VERSION=0.4
+VERSION=0.5
 DATE=$(shell date  +%Y.%m.%d)
 COMMITDATE=$(shell git show -s --format=%ci | cut -d ' ' -f 1)
 GITVERSION=$(shell git describe --tag --always --dirty)

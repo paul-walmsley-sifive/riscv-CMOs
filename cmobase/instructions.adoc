@@ -7,3 +7,9 @@ include::insns/cbo.inval.adoc[]
 include::insns/cbo.flush.adoc[]
 <<<
 include::insns/cbo.zero.adoc[]
+<<<
+include::insns/prefetch.i.adoc[]
+<<<
+include::insns/prefetch.r.adoc[]
+<<<
+include::insns/prefetch.w.adoc[]
