@@ -399,11 +399,15 @@ periodic cancellation of a reservation on another hart._
 
 ****
 
-=== Discovery
+=== Configuration
 
 *TBD*
 
 * general cache structure/organization?
-* relationship among harts?
-* cache block size for management, zero, prefetch
+* relationship among harts? (i.e. which set does a hart belong to?)
+* cache block size for management and prefetch
+* cache block size for zero
 * CBIE support at each privilege level
+
+At minimum, the configuration structure needs to describe the two cache block
+sizes and the supported CBIE values.
