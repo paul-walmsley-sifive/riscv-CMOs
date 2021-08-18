@@ -408,6 +408,9 @@ periodic cancellation of a reservation on another hart._
 * cache block size for zero
 * CBIE support at each privilege level
 * what happens if CBO operations are executed on addresses that are not cached?
+* physical addresses may differ between observers (remapping mechanisms)
+* refine the concept of "uniquely identified by a physical address" in a system
+
 
 At minimum, the configuration structure needs to describe the two cache block
 sizes and the supported CBIE values.
