@@ -407,6 +407,7 @@ periodic cancellation of a reservation on another hart._
 * cache block size for management and prefetch
 * cache block size for zero
 * CBIE support at each privilege level
+* what happens if CBO operations are executed on addresses that are not cached?
 
 At minimum, the configuration structure needs to describe the two cache block
 sizes and the supported CBIE values.
