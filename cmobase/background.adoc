@@ -7,17 +7,16 @@ This chapter provides information common to all CMO extensions.
 
 A _memory location_ is a physical resource in a system uniquely identified by a
 _physical address_. The _observers_ of a given memory location consist of the
-RISC-V harts or I/O devices that can access that memory location. A given
-observer may not be able to access all memory locations in a system, and two
-different harts or devices may or may not be able to observe the same set of
-memory locations.
+bus initiators that can access that memory location. A given observer may not
+be able to access all memory locations in a system, and two different observers
+may or may not be able to observe the same set of memory locations.
 
 In this specification, a _load operation_ (or _store operation_) is performed by
-an observer to consume (or modify) the data at a given memory location. For a
-RISC-V hart, a load or store operation may be performed as a result of an
-explicit or implicit memory access. Additionally, a _read operation_ (or _write
-operation_) is an operation performed on the memory location to fetch (or
-update) the data at the physical resource.
+an observer to consume (or modify) the data at a given memory location. Load or
+store operations may be performed as a result of explicit or implicit memory
+accesses. Additionally, a _read operation_ (or _write operation_) is an
+operation performed on the memory location to fetch (or update) the data at the
+physical resource.
 
 ****
 
